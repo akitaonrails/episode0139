@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+  app_1:
+    build: .
+    ports:
+      - "3000"
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_USER=app_user
+      - DATABASE_PASSWORD=app_password
+      - REDIS_HOST=redis
+    depends_on:
+      - db
+      - redis
+
+  app_2:
+    build: .
+    ports:
+      - "3000"
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_USER=app_user
+      - DATABASE_PASSWORD=app_password
+      - REDIS_HOST=redis
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: docker.io/postgres:latest
+    environment:
+      - POSTGRES_USER=app_user
+      - POSTGRES_PASSWORD=app_password
+
+  redis:
+    image: docker.io/redis:latest
+
+  load_balancer:
+    image: docker.io/nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - app_1
+      - app_2
