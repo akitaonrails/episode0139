@@ -15,17 +15,7 @@ services:
       - redis
 
   app_2:
-    build: .
-    ports:
-      - "3000"
-    environment:
-      - DATABASE_HOST=db
-      - DATABASE_USER=app_user
-      - DATABASE_PASSWORD=app_password
-      - REDIS_HOST=redis
-    depends_on:
-      - db
-      - redis
+    extends: app_1
 
   db:
     image: docker.io/postgres:latest
